@@ -61,15 +61,12 @@ Your goal is to make every conversation thoughtful, safe, natural, and supportiv
 // SAFETY DETECTION
 // ------------------------------------------
 
-
 function detectSafetyRisk(message) {
   const text = message.toLowerCase();
 
-  // Explicit self-harm or suicide language
   const selfHarmPattern =
     /\b(suicid(e|al)|kill myself|end my life|hurt(?:ing)? myself|harm(?:ing)? myself|self[- ]harm|cut(?:ting)? myself)\b/i;
 
-  // Indirect expressions that may indicate serious emotional distress
   const indirectRiskPattern =
     /\b(if i disappeared|if i were gone|if i was gone|whether anyone would notice|no one would notice if|nobody would notice if|better off without me|wish i could disappear|don't want to be here anymore)\b/i;
 
@@ -80,18 +77,23 @@ function detectSafetyRisk(message) {
     return { level: "none" };
   }
 
-  // Explicit denial of having a plan
-  const noPlanPattern =
-    /\b(no|don't have|do not have|without)\s+(?:a\s+)?plan\b/i;
-
+  // Immediate danger takes priority over all other indicators.
   const immediateRiskPattern =
-    /\b(tonight|right now|today|about to|going to|can't stop myself|cannot stop myself|might act|have a plan|plan to|going to do it)\b/i;
+    /\b(tonight|right now|today|about to|going to|can't stop myself|cannot stop myself|might act|going to do it|intend to|will hurt myself)\b/i;
 
-  const hasImmediateRisk = immediateRiskPattern.test(text);
-  const explicitlyDeniesPlan = noPlanPattern.test(text);
-
-  if (hasExplicitRisk && hasImmediateRisk && !explicitlyDeniesPlan) {
+  if (immediateRiskPattern.test(text)) {
     return { level: "high" };
+  }
+
+  // Recognise clearly historical experiences accompanied by recovery.
+  const historicalPattern =
+    /\b(a few years ago|years ago|last year|in the past|when i was younger|used to)\b/i;
+
+  const recoveryPattern =
+    /\b(recovered|doing much better|doing better now|moved on|in recovery|got better|proud of how far i've come)\b/i;
+
+  if (historicalPattern.test(text) && recoveryPattern.test(text)) {
+    return { level: "none" };
   }
 
   return { level: "elevated" };
