@@ -56,7 +56,6 @@ RESPONSE STYLE:
 Your goal is to make every conversation thoughtful, safe, natural, and supportive.
 `;
 
-
 // ------------------------------------------
 // SAFETY DETECTION
 // ------------------------------------------
