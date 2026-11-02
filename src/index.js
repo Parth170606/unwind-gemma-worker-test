@@ -251,7 +251,7 @@ export default {
             content: message.trim(),
           },
         ],
-        max_tokens: 220,
+        max_tokens: 350,
         temperature: 0.4,
         top_p: 0.9,
         top_k: 40,
